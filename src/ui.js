@@ -46,17 +46,24 @@ var ui = {
 	  ret += '</div>';
 	}
       }
+      if(col.text){
+          ret += '<div class="'+col.class_label+'">';
+          ret += col.text;
+	  ret += '</div>';
+
+      }
       ret += '</div>';
     }
     return ret;
   },
 
-  formgen:function(obj,form_id,action){
+  formgen:function(obj,form_id,form_action,action){
     var ret = '';
-    if(!action || action !== false) action = true;
-    //if(!form_action)  form_action = '';
+    if(!action)  action = true;
+    else action = false;
+    if(!form_action)  form_action = '';
     if(action === true){
-      ret += '<form role="form"  id="'+form_id+'" method="post" enctype="multipart/form-data">';
+      ret += '<form role="form" id="'+form_id+'" action="'+form_action+'" method="post" enctype="multipart/form-data">';
     }
 
     for(var i in obj){
@@ -94,9 +101,10 @@ var ui = {
       
       if(first && first.panel_start === true){
         var panel_class = (first.panel_class) ? first.panel_class:'panel-default';
-        ret += '<div class="panel '+panel_class+'">';
+	var panel_id = (first.panel_id) ? 'id="'+ first.panel_id +'"':'';
+        ret += '<div class="panel '+panel_class+'"'+ panel_id +'>';
         if(first.panel_heading)  ret += '<div class="panel-heading">'+first.panel_heading+'</div>';
-        ret +="<div class=\"panel-body\">";
+        ret +='<div class="panel-body">';
       }
 
       if(first && first.div_start === true){
@@ -107,7 +115,13 @@ var ui = {
       ret += '<div class=\"row\">';
       for(var j in rows){
         cols = rows[j];
-		  
+
+	var name = (cols.name) ? cols.name: '';
+        var id = (cols.id) ? cols.id:name;
+	var sdisplay = (cols.sdisplay) ? ' style="display: '+ cols.sdisplay +'"':'';
+
+	ret += '<div id="row_'+ id +'"' + sdisplay +'>';
+
         var input_group = (cols.input_group) ? 'input-group':'form-group';
   
 	
@@ -132,6 +146,7 @@ var ui = {
             ret += form.gen_input();
           ret += '</div>';
         }
+        ret += '</div>';
       }
       ret += '</div>';
       
@@ -164,11 +179,14 @@ var ui = {
   },
 
   layout:function(obj){
-    var ret = '<div class="row">';
-      ret += '<div class="'+ obj.form_class + '">';
-        ret += '<h4 class="page-header text-center">'+ obj.page_heading +' </h4>';
+    var ret = '';
+    if(obj.page_heading){
+      ret += '<div class="row">';
+        ret += '<div class="'+ obj.form_class + '">';
+          ret += '<h4 class="page-header text-center">'+ obj.page_heading +' </h4>';
+        ret += '</div>';
       ret += '</div>';
-    ret += '</div>';
+    }
 
     ret += '<div class="row">';
       ret += '<div class="'+ obj.form_class + '">';
@@ -183,11 +201,13 @@ var ui = {
 	    ret += obj.ui;
 	  ret += '</div>';
 	ret += '</div>';
-      }
+      }else ret += obj.ui;
 
       ret += '</div>';
-       
+      
+      if(obj.extra) ret += obj.extra;
     ret += '</div>';
+
     return ret;
   }
 

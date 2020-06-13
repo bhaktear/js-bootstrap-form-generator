@@ -112,7 +112,7 @@ var ui = {
         ret += '<div id="'+ first.id +'"'+ disabled +'>';
       }
 
-      ret += '<div class=\"row\">';
+      ret += '<div class="row">';
       for(var j in rows){
         cols = rows[j];
 
